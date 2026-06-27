@@ -2,8 +2,8 @@ name: Android Build
 
 on:
   push:
-    branches: [ "main" ] # main 브랜치에 코드가 올라가면 자동 실행
-  workflow_dispatch: # 수동으로 빌드 버튼을 누를 수 있게 해줌
+    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -20,11 +20,11 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+    # chmod +x gradlew 단계는 삭제합니다 (파일이 없으므로)
 
-    - name: Build Debug APK
-      run: ./gradlew assembleDebug
+    - name: Build Debug APK (Using System Gradle)
+      # ./gradlew 대신 시스템에 설치된 gradle을 바로 호출합니다.
+      run: gradle assembleDebug
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
