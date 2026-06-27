@@ -1,0 +1,6 @@
+{
+  "name": "치장물자간편관리체계",
+  "description": "군부대 내 치장물자 창고 보관물자 및 군장을 편제별로 암호화하여 관리하는 로컬 전용 체계",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

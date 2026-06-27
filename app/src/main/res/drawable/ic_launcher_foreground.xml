@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Group to center/position the icon elements -->
+    <group>
+        <!-- 1. Top Anchor/Cross Symbol (Navy Blue #0E2C54) -->
+        <!-- Ring/Circle on top: outer diameter 14, inner diameter 8 -->
+        <path
+            android:fillColor="#0E2C54"
+            android:fillType="evenOdd"
+            android:pathData="M54,15 C57.866,15 61,18.134 61,22 C61,25.866 57.866,29 54,29 C50.134,29 47,25.866 47,22 C47,18.134 50.134,15 54,15 Z M54,18 C51.791,18 50,19.791 50,22 C50,24.209 51.791,26 54,26 C56.209,26 58,24.209 58,22 C58,19.791 56.209,18 54,18 Z" />
+
+        <!-- Crossbar (Horizontal bar) -->
+        <path
+            android:fillColor="#0E2C54"
+            android:pathData="M41,27 H67 V31 H41 Z" />
+
+        <!-- Vertical Stem -->
+        <path
+            android:fillColor="#0E2C54"
+            android:pathData="M52,29 H56 V38 H52 Z" />
+
+        <!-- 2. Golden Star (Gold #B1915B) -->
+        <path
+            android:fillColor="#B1915B"
+            android:pathData="M54,34 L59,45.5 L71,45.5 L61.5,52 L65.5,65 L54,57 L42.5,65 L46.5,52 L37,45.5 L49,45.5 Z" />
+
+        <!-- 3. Left Wing (Navy Blue #0E2C54) -->
+        <!-- Top Feather -->
+        <path
+            android:fillColor="#0E2C54"
+            android:pathData="M12,40 L38,40 L38,44 L18,44 Z" />
+        <!-- Middle Feather -->
+        <path
+            android:fillColor="#0E2C54"
+            android:pathData="M18,46 L38,46 L38,50 L24,50 Z" />
+        <!-- Bottom Feather -->
+        <path
+            android:fillColor="#0E2C54"
+            android:pathData="M24,52 L38,52 L38,56 L30,56 Z" />
+
+        <!-- 4. Right Wing (Navy Blue #0E2C54) -->
+        <!-- Top Feather -->
+        <path
+            android:fillColor="#0E2C54"
+            android:pathData="M70,40 L96,40 L90,44 L70,44 Z" />
+        <!-- Middle Feather -->
+        <path
+            android:fillColor="#0E2C54"
+            android:pathData="M70,46 L90,46 L84,50 L70,50 Z" />
+        <!-- Bottom Feather -->
+        <path
+            android:fillColor="#0E2C54"
+            android:pathData="M70,52 L84,52 L78,56 L70,56 Z" />
+
+        <!-- 5. 3D Isometric Cube Box (Navy Blue #0E2C54) -->
+        <!-- Top Face -->
+        <path
+            android:fillColor="#0E2C54"
+            android:pathData="M54,62.5 L65.5,68.25 L54,74 L42.5,68.25 Z" />
+        <!-- Left Face -->
+        <path
+            android:fillColor="#0E2C54"
+            android:pathData="M41.5,69.5 L53,75.25 L53,92.5 L41.5,86.75 Z" />
+        <!-- Right Face -->
+        <path
+            android:fillColor="#0E2C54"
+            android:pathData="M55,75.25 L66.5,69.5 L66.5,86.75 L55,92.5 Z" />
+    </group>
+</vector>
