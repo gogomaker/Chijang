@@ -21,15 +21,13 @@ jobs:
         cache: gradle
 
     - name: Generate Gradle Wrapper
-      # 시스템 gradle을 사용해 최신 안드로이드 프로젝트에 맞는 gradlew 파일을 즉석에서 생성합니다.
-      run: gradle wrapper --gradle-version 8.7
+      # 8.7이었던 버전을 9.3.1로 변경합니다.
+      run: gradle wrapper --gradle-version 9.3.1
 
     - name: Grant execute permission for gradlew
-      # 생성된 파일에 실행 권한을 부여합니다.
       run: chmod +x gradlew
 
     - name: Build Debug APK
-      # 생성된 gradlew를 사용하며, AWT 관련 UI 충돌 에러를 막기 위해 headless 옵션을 추가합니다.
       run: ./gradlew assembleDebug -Djava.awt.headless=true
 
     - name: Upload APK Artifact
@@ -37,4 +35,5 @@ jobs:
       with:
         name: app-debug-apk
         path: app/build/outputs/apk/debug/app-debug.apk
+
 
