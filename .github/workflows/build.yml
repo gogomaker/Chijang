@@ -1,0 +1,40 @@
+name: Android Build
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Fix KSP Headless Issue
+      # 鍮뚮뱶 諛깃렇�쇱슫�� �꾨줈�몄뒪�� headless �듭뀡�� 媛뺤젣濡� 二쇱엯�⑸땲��.
+      run: echo "org.gradle.jvmargs=-Xmx4g -Dfile.encoding=UTF-8 -Djava.awt.headless=true" > gradle.properties
+
+    - name: Generate Gradle Wrapper
+      run: gradle wrapper --gradle-version 9.3.1
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Build Debug APK
+      run: ./gradlew assembleDebug
+
+    - name: Upload APK Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-debug-apk
+        path: app/build/outputs/apk/debug/app-debug.apk
