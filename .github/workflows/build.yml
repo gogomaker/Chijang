@@ -5,6 +5,10 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
+# 파일 덮어쓰기 대신, 환경 변수로 안전하게 옵션을 주입합니다.
+env:
+  JAVA_TOOL_OPTIONS: "-Djava.awt.headless=true"
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -19,10 +23,6 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: gradle
-
-    - name: Fix KSP Headless Issue
-      # 鍮뚮뱶 諛깃렇�쇱슫�� �꾨줈�몄뒪�� headless �듭뀡�� 媛뺤젣濡� 二쇱엯�⑸땲��.
-      run: echo "org.gradle.jvmargs=-Xmx4g -Dfile.encoding=UTF-8 -Djava.awt.headless=true" > gradle.properties
 
     - name: Generate Gradle Wrapper
       run: gradle wrapper --gradle-version 9.3.1
