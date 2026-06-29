@@ -258,8 +258,8 @@ fun AppContent(viewModel: MilitaryViewModel) {
                     NavigationBarItem(
                         selected = currentSelection == Screen.MetadataEdit,
                         onClick = { viewModel.navigateTo(Screen.MetadataEdit) },
-                        icon = { Icon(Icons.Default.Edit, contentDescription = "제원수정") },
-                        label = { Text("제원수정", style = MaterialTheme.typography.labelMedium) },
+                        icon = { Icon(Icons.Default.Edit, contentDescription = "제원등록") },
+                        label = { Text("제원등록", style = MaterialTheme.typography.labelMedium) },
                         modifier = Modifier.testTag("nav_metadata_edit")
                     )
                 }

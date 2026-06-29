@@ -55,10 +55,34 @@ class MilitaryRepository(
         gearPackDao.updateGearPacksManagerByBoxId(boxId, managerName)
     }
 
+    suspend fun updatePPBoxId(oldBoxId: String, newBoxId: String): Boolean {
+        val oldBox = ppBoxDao.getPPBoxById(oldBoxId) ?: return false
+        val newBox = oldBox.copy(boxId = newBoxId)
+        ppBoxDao.insertPPBox(newBox)
+        gearPackDao.updateGearPackParentBoxId(oldBoxId, newBoxId)
+        ppBoxDao.deletePPBoxById(oldBoxId)
+        return true
+    }
+
+    suspend fun updateGearPackId(oldGearId: String, newGearId: String): Boolean {
+        val oldGear = gearPackDao.getGearPackById(oldGearId) ?: return false
+        val newGear = oldGear.copy(gearId = newGearId)
+        gearPackDao.insertGearPack(newGear)
+        itemDao.updateItemsGearId(oldGearId, newGearId)
+        gearPackDao.deleteGearPackById(oldGearId)
+        return true
+    }
+
     // Items
     fun getAllItems(): Flow<List<Item>> = itemDao.getAllItems()
     
     fun getItemsByGearId(gearId: String): Flow<List<Item>> = itemDao.getItemsByGearId(gearId)
     
     fun getItemsByName(itemName: String): Flow<List<Item>> = itemDao.getItemsByName(itemName)
+
+    suspend fun insertItem(item: Item) = itemDao.insertItem(item)
+
+    suspend fun insertGearPack(gear: GearPack) = gearPackDao.insertGearPack(gear)
+
+    suspend fun insertPPBox(box: PPBox) = ppBoxDao.insertPPBox(box)
 }

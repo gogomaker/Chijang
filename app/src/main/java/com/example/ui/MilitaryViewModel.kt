@@ -84,6 +84,20 @@ class MilitaryViewModel(private val repository: MilitaryRepository) : ViewModel(
     private val _nfcLogs = MutableStateFlow<List<String>>(listOf("NFC 대기 중..."))
     val nfcLogs: StateFlow<List<String>> = _nfcLogs.asStateFlow()
 
+    private val _generatedSn = MutableStateFlow("015438213")
+    val generatedSn: StateFlow<String> = _generatedSn.asStateFlow()
+
+    private val _isNfcWriting = MutableStateFlow(false)
+    val isNfcWriting: StateFlow<Boolean> = _isNfcWriting.asStateFlow()
+
+    fun setGeneratedSn(sn: String) {
+        _generatedSn.value = sn
+    }
+
+    fun setIsNfcWriting(writing: Boolean) {
+        _isNfcWriting.value = writing
+    }
+
     init {
         // Load initial lists
         loadAllGearPacks()
@@ -252,9 +266,63 @@ class MilitaryViewModel(private val repository: MilitaryRepository) : ViewModel(
         }
     }
 
+    // NFC Tag ID 수정 비즈니스 로직
+    fun updateNfcTagId(oldTagId: String, newTagId: String) {
+        viewModelScope.launch {
+            try {
+                logNfc("NFC 태그 ID 수정 시도: $oldTagId -> $newTagId")
+                
+                // 1. PP Box 인지 확인
+                val box = repository.getPPBoxById(oldTagId)
+                if (box != null) {
+                    val success = repository.updatePPBoxId(oldTagId, newTagId)
+                    if (success) {
+                        logNfc("보관함 ID 수정 성공! ($oldTagId -> $newTagId)")
+                        val updatedBox = repository.getPPBoxById(newTagId)
+                        _scannedPPBox.value = updatedBox
+                        _scannedGearPack.value = null
+                        _isNfcWriting.value = false
+                    } else {
+                        logNfc("보관함 ID 수정 실패")
+                    }
+                    return@launch
+                }
+
+                // 2. Gear Pack 인지 확인
+                val gear = repository.getGearPackById(oldTagId)
+                if (gear != null) {
+                    val success = repository.updateGearPackId(oldTagId, newTagId)
+                    if (success) {
+                        logNfc("군장 ID 수정 성공! ($oldTagId -> $newTagId)")
+                        val updatedGear = repository.getGearPackById(newTagId)
+                        _scannedGearPack.value = updatedGear
+                        _scannedPPBox.value = null
+                        _isNfcWriting.value = false
+                    } else {
+                        logNfc("군장 ID 수정 실패")
+                    }
+                    return@launch
+                }
+
+                logNfc("수정 실패: 대상을 찾을 수 없음 ($oldTagId)")
+                _isNfcWriting.value = false
+            } catch (e: Exception) {
+                logNfc("NFC 태그 ID 수정 오류: ${e.message}")
+                _isNfcWriting.value = false
+            }
+        }
+    }
+
     // NFC Trigger Logic (Both simulator and real NFC receiver call this)
     fun triggerNfcTag(tagId: String) {
         logNfc("NFC 태그 감지: $tagId")
+        if (_isNfcWriting.value) {
+            val newSn = _generatedSn.value
+            if (newSn.isNotEmpty() && tagId != newSn) {
+                updateNfcTagId(tagId, newSn)
+                return
+            }
+        }
         viewModelScope.launch {
             try {
                 // Check if it is a PP Box
@@ -299,6 +367,47 @@ class MilitaryViewModel(private val repository: MilitaryRepository) : ViewModel(
         _scannedGearPack.value = null
         _scannedPPBox.value = null
         _scannedPPBoxGearPacks.value = emptyList()
+    }
+
+    // Exposed Flows for 제원등록/수정
+    val allGearPacksFlow = repository.getAllGearPacks()
+    val allItemsFlow = repository.getAllItems()
+    val allPPBoxesFlow = repository.getAllPPBoxes()
+
+    fun saveItem(item: Item, onSuccess: () -> Unit = {}) {
+        viewModelScope.launch {
+            try {
+                repository.insertItem(item)
+                logNfc("DB 품목 저장 완료: ${item.itemName} (${item.itemId})")
+                onSuccess()
+            } catch (e: Exception) {
+                logNfc("DB 에러 (품목 저장 실패): ${e.message}")
+            }
+        }
+    }
+
+    fun saveGearPack(gear: GearPack, onSuccess: () -> Unit = {}) {
+        viewModelScope.launch {
+            try {
+                repository.insertGearPack(gear)
+                logNfc("DB 군장 저장 완료: ${gear.company} ${gear.platoon} (${gear.gearId})")
+                onSuccess()
+            } catch (e: Exception) {
+                logNfc("DB 에러 (군장 저장 실패): ${e.message}")
+            }
+        }
+    }
+
+    fun savePPBox(box: PPBox, onSuccess: () -> Unit = {}) {
+        viewModelScope.launch {
+            try {
+                repository.insertPPBox(box)
+                logNfc("DB 보관함 저장 완료: ${box.company} ${box.platoon} (${box.boxId})")
+                onSuccess()
+            } catch (e: Exception) {
+                logNfc("DB 에러 (보관함 저장 실패): ${e.message}")
+            }
+        }
     }
 
     private fun logNfc(message: String) {

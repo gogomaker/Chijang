@@ -26,6 +26,9 @@ interface PPBoxDao {
 
     @Query("UPDATE pp_boxes SET managerName = :managerName WHERE boxId = :boxId")
     suspend fun updatePPBoxManager(boxId: String, managerName: String)
+
+    @Query("DELETE FROM pp_boxes WHERE boxId = :boxId")
+    suspend fun deletePPBoxById(boxId: String)
 }
 
 @Dao
@@ -56,6 +59,12 @@ interface GearPackDao {
 
     @Query("UPDATE gear_packs SET managerName = :managerName WHERE parentBoxId = :boxId")
     suspend fun updateGearPacksManagerByBoxId(boxId: String, managerName: String)
+
+    @Query("DELETE FROM gear_packs WHERE gearId = :gearId")
+    suspend fun deleteGearPackById(gearId: String)
+
+    @Query("UPDATE gear_packs SET parentBoxId = :newBoxId WHERE parentBoxId = :oldBoxId")
+    suspend fun updateGearPackParentBoxId(oldBoxId: String, newBoxId: String)
 }
 
 @Dao
@@ -74,4 +83,7 @@ interface ItemDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertItems(items: List<Item>)
+
+    @Query("UPDATE items SET gearId = :newGearId WHERE gearId = :oldGearId")
+    suspend fun updateItemsGearId(oldGearId: String, newGearId: String)
 }
